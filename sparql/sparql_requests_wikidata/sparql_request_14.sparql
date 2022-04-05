@@ -1,0 +1,104 @@
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wds: <http://www.wikidata.org/entity/statement/>
+PREFIX wdv: <http://www.wikidata.org/value/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX schema: <http://schema.org/>
+
+# requête pour le mot clé: comics
+
+SELECT ?id ?labelFR ?labelEN ?instanceOFlabel ?partOFlabel ?countFOW ?countINS ?wikidataURL ?wikipediaFR ?wikipediaEN
+# toutes les requêtes sont optional pour pouvoir automatiser un maxxx en évitant les erreurs
+# ?id: l'identifiant du mot clé dans wikidata
+# ?labelFR: le nom du mot clé dans wikidata en français
+# ?labelEN: le nom du mot clé dans wikidata en anglais
+# ?instanceOFlabel: les noms des entités dont le mot clé est l'instance, en anglais
+# ?partOFlabel: le nom des entités dont le mot clé fait partie, en anglais
+# ?countFOW: le nombre de personnes morales/physiques qui ont le mot clé comme domaine de travail/étude
+# ?countINS: nombre d'instances du mot clé
+# ?wikidataURL: l'URL wikidata
+# ?wikipediaFR: un lien vers la page wikipedia en français, si elle existe
+# ?wikipediaEN: un lien vers la page wikipedia en anglais, si elle existe
+WHERE {
+  # définir une variable pour stocker l'ID wikidata
+  VALUES ?id {"Q1004"}
+
+  # afficher le nom en français
+  OPTIONAL {
+    wd:Q1004 rdfs:label ?labelFR .
+    FILTER (langMatches(lang(?labelFR), "FR"))
+  }
+
+  # afficher le nom en anglais
+  OPTIONAL {
+    {SELECT ?labelEN
+      WHERE {
+        wd:Q1004 rdfs:label ?labelEN .
+        FILTER (langMatches(lang(?labelEN), "EN"))
+      } LIMIT 1
+    }
+  }
+
+  # lister les éléments dont le mot clé est l'instance
+  OPTIONAL {
+    {SELECT  ?instanceOFlabel
+      WHERE {
+        wd:Q1004 wdt:P31 ?instanceOF . # l'instance
+        ?instanceOF rdfs:label ?instanceOFlabel . # le label de l'instance en anglais
+        FILTER (langMatches(lang(?instanceOFlabel), "EN"))
+      }
+    }
+  } # cette query ramène potentiellement des résultats multiples qu'il faudra distinct dans dataiku
+
+  # lister les éléments dont le mot clé fait partie
+  OPTIONAL {
+    {SELECT  ?partOFlabel
+      WHERE {
+        wd:Q1004 wdt:P371 ?partOF . # l'instance
+        ?instanceOF rdfs:label ?partOFlabel . # le label de l'instance d'au dessus
+        FILTER (langMatches(lang(?partOFlabel), "EN"))
+      }
+    }
+  } # cette query ramène potentiellement des résultats multiples qu'il faudra distinct dans dataiku
+
+  # compter le nb de personnes (morales/physiques) qui ont pour "field of work" (domaine de spécialisation) le mot clé
+  OPTIONAL {
+    {SELECT  (COUNT($fow) AS ?countFOW)
+      WHERE {
+        $fow wdt:P101 wd:Q1004 .
+      }
+    }
+  } # cette query ramène potentiellement des résultats multiples qu'il faudra distinct dans dataiku
+
+  # compter le nombre d'instances (éléments spécifiques) du mot clé: livres de la catégorie littérature...
+  OPTIONAL {
+    {SELECT (COUNT($ins) AS ?countINS)
+      WHERE {
+        $ins wdt:P31 wd:Q1004 .
+      }
+    }
+  }
+
+  # construire l'URL wikidata
+  BIND (CONCAT("https://www.wikidata.org/wiki/", $id) AS ?wikidataURL)
+
+  # récupérer la page wikipedia en anglais
+  OPTIONAL {
+    ?wikipediaEN schema:about wd:Q1004 .
+    ?wikipediaEN schema:inLanguage "en" .
+    FILTER (SUBSTR(str(?wikipediaEN), 1, 25) = "https://en.wikipedia.org/")
+  }
+
+  # récupérer la page wikipedia en français
+  OPTIONAL {
+    ?wikipediaFR schema:about wd:Q1004 .
+    ?wikipediaFR schema:inLanguage "fr" .
+    FILTER (SUBSTR(str(?wikipediaFR), 1, 25) = "https://fr.wikipedia.org/")
+  }
+}

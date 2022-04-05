@@ -1,0 +1,61 @@
+PREFIX bnfroles: <http://data.bnf.fr/vocabulary/roles/>
+PREFIX rdarelationships: <http://rdvocab.info/RDARelationshipsWEMI/>
+PREFIX frbr-rda: <http://rdvocab.info/uri/schema/FRBRentitiesRDA/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+# requête sur le thème : {KEYWORD}
+
+SELECT ?label ?uri ?cntAUT ?cntDOC ?labelNRW ?uriNRW ?labelBRD ?uriBRD
+# label : le nom du thème requêté
+# uri : l'URI du thème requêté dans databnf
+# cntAUT : le nombre d'auteur.ice.s lié.e.s au thème
+# ctnDOC : le nombre de documents liés au thème
+# labelNRW : les noms des termes spécifiques du thème requêté figurant également dans le dataset
+# uriNRW : l'uri des termes spécifiques du thème requêté figurant également dans le dataset
+# labelBRD : les noms des termes génériques du thème requêté figurant également dans le dataset
+# uriBRD : l'uri des termes génériques du thème requêté figurant également dans le dataset
+WHERE {
+  # stocker l'uri sur lequel la requête est faite et l'ensemble des URI requêtés dans des variables
+  VALUES ?uri {"{URI}"}
+  {URILIST}
+
+  # récupérer le nom du thème requêté
+  <{URI}> skos:prefLabel ?label .
+
+  # récupérer le nombre d'auteur.ices.s lié.e.s au thème requêté
+  OPTIONAL {
+    SELECT (COUNT(DISTINCT ?aut) AS ?cntAUT)
+    WHERE {
+      ?expr dcterms:subject <{URI}> ;
+            rdf:type frbr-rda:Expression ;
+            bnfroles:r70 ?aut .
+    }
+  }
+
+  # récupérer le nombre de documents liés au thème requêté
+  OPTIONAL {
+    SELECT (COUNT(DISTINCT ?doc) AS ?cntDOC)
+    WHERE {
+      ?doc dcterms:subject <{URI}> ;
+            rdf:type frbr-rda:Expression .
+    }
+  }
+
+  # récupérer les TS qui font partie des thèmes de notre dataset
+  OPTIONAL {
+    <{URI}> skos:narrower ?uriNRW .
+    ?uriNRW skos:prefLabel ?labelNRW .
+    FILTER (?uriNRW IN (?urilist))
+  }
+
+  # récupérer les TG qui font partie des thèmes
+  OPTIONAL {
+    <{URI}> skos:broader ?uriBRD .
+    ?uriBRD skos:prefLabel ?labelBRD .
+    FILTER (?uriBRD IN (?urilist))
+  }
+}

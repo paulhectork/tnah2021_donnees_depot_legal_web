@@ -1,0 +1,51 @@
+
+PREFIX bnfroles: <http://data.bnf.fr/vocabulary/roles/>
+PREFIX rdarelationships: <http://rdvocab.info/RDARelationshipsWEMI/>
+PREFIX frbr-rda: <http://rdvocab.info/uri/schema/FRBRentitiesRDA/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+# requête sur le thème : Édition
+
+SELECT DISTINCT ?label ?uri ?cntAUT ?cntDOC ?uriRTD ?labelRTD
+# label : le nom du thème requêté
+# uri : l'URI du thème requêté dans databnf
+# cntAUT : le nombre d'auteur.ice.s lié.e.s au thème
+# ctnDOC : le nombre de documents liés au thème
+# labelRTD : les noms des termes liés au thème requêté qui figurent aussi dans le dataset
+# uriRTD : les uris des termes liés au thème requêté qui figurent aussi dans le dataset
+WHERE {
+  # stocker l'uri sur lequel la requête est faite et l'ensemble des URI requêtés dans des variables
+  VALUES ?uri {"http://data.bnf.fr/ark:/12148/cb13318593f"}
+  
+  # récupérer le nom du thème requêté
+  <http://data.bnf.fr/ark:/12148/cb13318593f> skos:prefLabel ?label .
+  
+  # récupérer le nombre d'auteur.ices.s lié.e.s au thème requêté
+  OPTIONAL {
+    SELECT (COUNT(DISTINCT ?aut) AS ?cntAUT)
+    WHERE {
+      ?expr dcterms:subject <http://data.bnf.fr/ark:/12148/cb13318593f> ;
+            rdf:type frbr-rda:Expression ;
+            bnfroles:r70 ?aut .
+    }
+  }
+  
+  # récupérer le nombre de documents liés au thème requêté
+  OPTIONAL {
+    SELECT (COUNT(DISTINCT ?doc) AS ?cntDOC)
+    WHERE {
+      ?doc dcterms:subject <http://data.bnf.fr/ark:/12148/cb13318593f> ;
+            rdf:type frbr-rda:Expression .
+    }
+  }
+  
+  # récupérer les termes liés au thème requêté
+  OPTIONAL {
+    <http://data.bnf.fr/ark:/12148/cb13318593f> skos:related ?uriRTD .
+    ?uriRTD skos:prefLabel ?labelRTD .
+  }
+}

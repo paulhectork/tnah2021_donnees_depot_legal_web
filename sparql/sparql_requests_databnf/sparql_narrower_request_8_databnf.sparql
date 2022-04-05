@@ -1,0 +1,29 @@
+
+PREFIX bnfroles: <http://data.bnf.fr/vocabulary/roles/>
+PREFIX rdarelationships: <http://rdvocab.info/RDARelationshipsWEMI/>
+PREFIX frbr-rda: <http://rdvocab.info/uri/schema/FRBRentitiesRDA/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+# requête sur le mot clé Bibliothéconomie
+# cette requête permet de récupérer les termes spécifiques d'un terme de notre dataset
+
+SELECT DISTINCT ?label ?uri ?uriNRW ?labelNRW
+# ?label : le nom du thème requêté dans databnf
+# ?uri : l'uri de ce thème
+# ?uriNRW : l'URI des termes spécifiques du thème requêté qui figurent également dans la liste des thèmes
+# ?labelNRW : le nom des termes spécifiques
+WHERE {
+  # stocker l'uri sur lequel la requête est faite
+  VALUES ?uri {"http://data.bnf.fr/ark:/12148/cb119316669"}
+  
+  # récupérer le nom du thème requêté
+  <http://data.bnf.fr/ark:/12148/cb119316669> skos:prefLabel ?label .
+  
+  # filtrer les données, récupérer les URI et les noms associés
+  <http://data.bnf.fr/ark:/12148/cb119316669> skos:narrower* ?uriNRW .
+  ?uriNRW skos:prefLabel ?labelNRW .
+}
