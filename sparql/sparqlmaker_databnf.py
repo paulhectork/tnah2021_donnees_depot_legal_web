@@ -7,7 +7,9 @@ from SPARQLWrapper import SPARQLWrapper, CSV
 A PROPOS
 --------
 ce script permet de générer en série une version différente de la même requête
-SPARQL dataBnF pour tous les thèmes du dataset (soit 23 termes). chaque requête 
+SPARQL dataBnF pour tous les thèmes du dataset (soit 23 termes, les 30 thèmes
+de du dataset n'ayant pas forcément d'équivalent dans DataBNF, et plusieurs
+thèmes du dataset renvoyant aux mêmes termes DataBNF). chaque requête 
 est lancée automatiquement. le texte des requêtes sont stockées dans le dossier 
 sparql_request. le résultat des requêtes sont stockées en JSON dans le dossier 
 sparql_out. la requête de base a été divisée en 3 requêtes pour éviter les timeout

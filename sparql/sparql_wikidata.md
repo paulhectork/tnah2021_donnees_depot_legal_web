@@ -3,26 +3,8 @@
 ---
 
 l'objectif: récupérer tous les mots clés qui sont utilisés dans +0.5% des entrées et les utiliser pour faire des requêtes SPARQL sur wikidata
-- pour automatiser la récupération d'URLs wikipedia via wikidata, voir: https://opendata.stackexchange.com/questions/6050/get-wikipedia-urls-sitelinks-in-wikidata-sparql-query
-- ce que je veux récupérer:
-	- l'entité recherchée: `wd:QXXXXX` 
-	- instance of : `P31`
-	- part of: `P371`
-	- part of: `P371`
-	- nombre de personnes qui ont pour "field of work": `P101`
-	- nombre d'instances spécifiques du mot clé (nombre de livres dans la catégorie littérature): `P31`
-	- Wikipedia en anglais et français (avec dans l'exemple ci-dessous CID la ressource recherchée)
- 	```
-	OPTIONAL {
-  	    ?article schema:about ?cid .
-      	    ?article schema:inLanguage "en" .
-       	    ?article schema:isPartOf <https://en.wikipedia.org/> .
-     	}
-	 ```
 
----
-
-## les identifiants (à préfixer de wd: ou wdt: je crois)
+## les identifiants
 - blog | blog: Q30849
 - France | France: Q142
 - écrivain | writer: Q36180
