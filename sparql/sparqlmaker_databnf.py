@@ -81,12 +81,12 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 # requête sur le thème : {KEYWORD}
 
 SELECT DISTINCT ?label ?uri ?cntAUT ?cntDOC ?uriRTD ?labelRTD
-# label : le nom du thème requêté
-# uri : l'URI du thème requêté dans databnf
-# cntAUT : le nombre d'auteur.ice.s lié.e.s au thème
-# ctnDOC : le nombre de documents liés au thème
-# labelRTD : les noms des termes liés au thème requêté qui figurent aussi dans le dataset
-# uriRTD : les uris des termes liés au thème requêté qui figurent aussi dans le dataset
+# ?label : le nom du thème requêté
+# ?uri : l'URI du thème requêté dans databnf
+# ?cntAUT : le nombre d'auteur.ice.s lié.e.s au thème
+# ?ctnDOC : le nombre de documents liés au thème
+# ?labelRTD : les noms des termes liés au thème requêté qui figurent aussi dans le dataset
+# ?uriRTD : les uris des termes liés au thème requêté qui figurent aussi dans le dataset
 WHERE {
   # stocker l'uri sur lequel la requête est faite et l'ensemble des URI requêtés dans des variables
   VALUES ?uri {"{URI}"}

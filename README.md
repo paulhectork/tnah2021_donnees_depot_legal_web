@@ -15,7 +15,7 @@ TNAH de l'École des Chartes (promotion 2021-2022).
 
 Notre projet porte sur le Dépôt légal du web, organisé par la BNF. Ce dépôt étant organisé thématiquement, nous avons choisi
 de travailler sur la collecte Littérature et Art effectuée entre 2011 et 2020. Les données de cette collecte sont disponibles sur
-[Data.gouv.fr]|(https://www.data.gouv.fr/fr/datasets/collectes-thematiques-du-web-par-la-bnf/) et diffusées sous licence libre.
+[Data.gouv.fr](https://www.data.gouv.fr/fr/datasets/collectes-thematiques-du-web-par-la-bnf/) et diffusées sous licence libre.
 
 La collecte Littérature et art regroupe des sites sélectionnés par le département Littérature et art de la Bibliothèque 
 nationale de France.
@@ -106,6 +106,33 @@ requête permet de récupérer :
 - `?wikidataURL`: l'URL wikidata
 - `?wikipediaFR`: un lien vers la page wikipedia en français, si elle existe
 - `?wikipediaEN`: un lien vers la page wikipedia en anglais, si elle existe 
+
+Sur **Data BnF**, trois requêtes sont lancées pour chaque mot clé (pour éviter que la durée n'excède la durée maximale autorisée
+pour une requête - 1 minute - il a fallu diviser les requêtes en 3). Pour chaque thème, le script lance les trois requêtes et
+produit 3 CSV (disponibles [ici](sparql/sparql_out_databnf)) : `sparql_main|broader|narrower_out_X_databnf.csv` (avec `broader`
+pour les requêtes cherchant à récupérer les termes génériques d'un thème, `narrower` pour récupérer les termes spécifiques
+et `main` pour le reste. Ces requêtes permettent de récupérer :
+- `?label` : le nom du thème requêté dans databnf
+- `?uri` : l'uri de ce thème
+- `?cntAUT` : le nombre d'auteur.ice.s lié.e.s au thème
+- `?ctnDOC` : le nombre de documents liés au thème
+- `?labelRTD` : les noms des termes liés au thème requêté qui figurent aussi dans le dataset
+- `?uriRTD` : les uris des termes liés au thème requêté qui figurent aussi dans le dataset
+- `?uriNRW` : l'URI des termes spécifiques du thème requêté qui figurent également dans la liste des thèmes
+- `?labelNRW` : le nom des termes spécifiques
+- `?uriBRD` : l'URI des termes génériques du thème requêté qui figurent également dans la liste des thèmes
+- `?labelBRD` : le nom des termes génériques
+
+L'ensemble des fichiers produits et utilisés pour les deux requêtes sont **conservés dans [ce dossier](sparql)**.
+- Les requêtes Wikidata se trouvent [ici](sparql/sparql_requests_wikidata)
+- Les requêtes Data BnF se trouvent [ici](sparql/sparql_requests_databnf)
+- Les résultats des requêtes DataBnF se trouvent [ici](sparql/sparql_out_databnf)
+- Les résultats des requêtes Wikidata se trouvent [ici](sparql/sparql_out_wikidata). 
+
+---
+
+## CHÂINE DE TRAITEMENT DATAIKU
+
 
 ---
 ## FAIT
