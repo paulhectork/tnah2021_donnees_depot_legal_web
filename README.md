@@ -19,6 +19,8 @@ L'export de Dataiku lui-même n'est pas présent sur ce dépôt: il est trop lou
 - [`urltoip`](urltoip) : le script permettant de récupérer des adresses IP à partir d'une URL
 - [`visualisations`](visualisations) : les datasets utilisés pour réaliser des visualisations
 
+Les visualisations sont disponibles sur [Tableau](https://public.tableau.com/app/profile/paul4106/viz/Dptlgalduweb/Histoire1?publish=yes). 
+
 ---
 
 ## PRÉSENTATION GÉNÉRALE DU PROJET
